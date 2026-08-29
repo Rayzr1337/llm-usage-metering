@@ -1,0 +1,9 @@
+.env
+node_modules
+dist
+dist-node
+*.tsbuildinfo
+.cursor/
+.claude/
+.devin/
+.agents/

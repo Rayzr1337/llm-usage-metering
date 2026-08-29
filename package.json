@@ -1,0 +1,48 @@
+{
+  "name": "llm-usage",
+  "version": "1.0.0",
+  "description": "FlyRank Backend Track capstone. A metering and billing service that tracks usage, enforces plan quotas, calculates cost, and syncs subscription state through Stripe in test mode.",
+  "main": "dist/src/server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/src/server.js",
+    "test": "jest",
+    "postinstall": "prisma skills sync || exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rayzr1337/llm-usage-metering.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "bugs": {
+    "url": "https://github.com/Rayzr1337/llm-usage-metering/issues"
+  },
+  "homepage": "https://github.com/Rayzr1337/llm-usage-metering#readme",
+  "dependencies": {
+    "@prisma/client": "^7.10.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "stripe": "^22.6.0",
+    "zod": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.4.0",
+    "@types/supertest": "^7.2.1",
+    "jest": "^30.5.0",
+    "prisma": "^7.10.0",
+    "supertest": "^7.2.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  }
+}
