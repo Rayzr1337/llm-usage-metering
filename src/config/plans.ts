@@ -11,8 +11,11 @@ export const PLAN_QUOTAS: Record<Plan, Record<UsageType, number>> = {
   },
 };
 
-export const TOKEN_PRICING_MICOROCENTS = {
+export const TOKEN_PRICING_MICROCENTS = {
     input: 15,
     output: 60,
     cachedInput: 5
 } as const;
+
+
+export const API_CALL_PRICE_MICROCENTS = 10;
