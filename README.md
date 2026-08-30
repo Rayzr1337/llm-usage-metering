@@ -4,7 +4,7 @@ FlyRank Backend Track capstone. A metering and billing service that tracks usage
 
 ## Status
 
-In progress. Phase 1: design.
+In progress. Phase 2: core billing logic.
 
 ## Stack
 
@@ -41,7 +41,7 @@ Endpoints will be listed here as routes are built.
 | Plan | API calls | AI tokens |
 | ---- | --------- | --------- |
 | Free | 1,000 / month | 100,000 / month |
-| Pro  | TBD | TBD |
+| Pro  | 10,000 / month | 2,000,000 / month |
 
 ## Evidence and build log
 
