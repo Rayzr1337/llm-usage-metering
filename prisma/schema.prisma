@@ -31,13 +31,17 @@ model Tenant {
 }
 
 model UsageEvent {
-  id             String    @id @default(uuid())
-  tenantId       String
-  tenant         Tenant    @relation(fields: [tenantId], references: [id])
-  type           UsageType
-  quantity       Int
-  idempotencyKey String
-  createdAt      DateTime  @default(now())
+  id                String    @id @default(uuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id])
+  type              UsageType
+  quantity          Int
+  inputTokens       Int?
+  cachedInputTokens Int?
+  outputTokens      Int?
+  reasoningTokens   Int?
+  idempotencyKey    String
+  createdAt         DateTime  @default(now())
 
   @@unique([tenantId, idempotencyKey])
   @@index([tenantId, createdAt])

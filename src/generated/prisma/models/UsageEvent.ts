@@ -28,10 +28,18 @@ export type AggregateUsageEvent = {
 
 export type UsageEventAvgAggregateOutputType = {
   quantity: number | null
+  inputTokens: number | null
+  cachedInputTokens: number | null
+  outputTokens: number | null
+  reasoningTokens: number | null
 }
 
 export type UsageEventSumAggregateOutputType = {
   quantity: number | null
+  inputTokens: number | null
+  cachedInputTokens: number | null
+  outputTokens: number | null
+  reasoningTokens: number | null
 }
 
 export type UsageEventMinAggregateOutputType = {
@@ -39,6 +47,10 @@ export type UsageEventMinAggregateOutputType = {
   tenantId: string | null
   type: $Enums.UsageType | null
   quantity: number | null
+  inputTokens: number | null
+  cachedInputTokens: number | null
+  outputTokens: number | null
+  reasoningTokens: number | null
   idempotencyKey: string | null
   createdAt: Date | null
 }
@@ -48,6 +60,10 @@ export type UsageEventMaxAggregateOutputType = {
   tenantId: string | null
   type: $Enums.UsageType | null
   quantity: number | null
+  inputTokens: number | null
+  cachedInputTokens: number | null
+  outputTokens: number | null
+  reasoningTokens: number | null
   idempotencyKey: string | null
   createdAt: Date | null
 }
@@ -57,6 +73,10 @@ export type UsageEventCountAggregateOutputType = {
   tenantId: number
   type: number
   quantity: number
+  inputTokens: number
+  cachedInputTokens: number
+  outputTokens: number
+  reasoningTokens: number
   idempotencyKey: number
   createdAt: number
   _all: number
@@ -65,10 +85,18 @@ export type UsageEventCountAggregateOutputType = {
 
 export type UsageEventAvgAggregateInputType = {
   quantity?: true
+  inputTokens?: true
+  cachedInputTokens?: true
+  outputTokens?: true
+  reasoningTokens?: true
 }
 
 export type UsageEventSumAggregateInputType = {
   quantity?: true
+  inputTokens?: true
+  cachedInputTokens?: true
+  outputTokens?: true
+  reasoningTokens?: true
 }
 
 export type UsageEventMinAggregateInputType = {
@@ -76,6 +104,10 @@ export type UsageEventMinAggregateInputType = {
   tenantId?: true
   type?: true
   quantity?: true
+  inputTokens?: true
+  cachedInputTokens?: true
+  outputTokens?: true
+  reasoningTokens?: true
   idempotencyKey?: true
   createdAt?: true
 }
@@ -85,6 +117,10 @@ export type UsageEventMaxAggregateInputType = {
   tenantId?: true
   type?: true
   quantity?: true
+  inputTokens?: true
+  cachedInputTokens?: true
+  outputTokens?: true
+  reasoningTokens?: true
   idempotencyKey?: true
   createdAt?: true
 }
@@ -94,6 +130,10 @@ export type UsageEventCountAggregateInputType = {
   tenantId?: true
   type?: true
   quantity?: true
+  inputTokens?: true
+  cachedInputTokens?: true
+  outputTokens?: true
+  reasoningTokens?: true
   idempotencyKey?: true
   createdAt?: true
   _all?: true
@@ -190,6 +230,10 @@ export type UsageEventGroupByOutputType = {
   tenantId: string
   type: $Enums.UsageType
   quantity: number
+  inputTokens: number | null
+  cachedInputTokens: number | null
+  outputTokens: number | null
+  reasoningTokens: number | null
   idempotencyKey: string
   createdAt: Date
   _count: UsageEventCountAggregateOutputType | null
@@ -222,6 +266,10 @@ export type UsageEventWhereInput = {
   tenantId?: Prisma.StringFilter<"UsageEvent"> | string
   type?: Prisma.EnumUsageTypeFilter<"UsageEvent"> | $Enums.UsageType
   quantity?: Prisma.IntFilter<"UsageEvent"> | number
+  inputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  cachedInputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  outputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  reasoningTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
   idempotencyKey?: Prisma.StringFilter<"UsageEvent"> | string
   createdAt?: Prisma.DateTimeFilter<"UsageEvent"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -232,6 +280,10 @@ export type UsageEventOrderByWithRelationInput = {
   tenantId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  inputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
+  cachedInputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
+  outputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
+  reasoningTokens?: Prisma.SortOrderInput | Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
@@ -246,6 +298,10 @@ export type UsageEventWhereUniqueInput = Prisma.AtLeast<{
   tenantId?: Prisma.StringFilter<"UsageEvent"> | string
   type?: Prisma.EnumUsageTypeFilter<"UsageEvent"> | $Enums.UsageType
   quantity?: Prisma.IntFilter<"UsageEvent"> | number
+  inputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  cachedInputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  outputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  reasoningTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
   idempotencyKey?: Prisma.StringFilter<"UsageEvent"> | string
   createdAt?: Prisma.DateTimeFilter<"UsageEvent"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -256,6 +312,10 @@ export type UsageEventOrderByWithAggregationInput = {
   tenantId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  inputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
+  cachedInputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
+  outputTokens?: Prisma.SortOrderInput | Prisma.SortOrder
+  reasoningTokens?: Prisma.SortOrderInput | Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UsageEventCountOrderByAggregateInput
@@ -273,6 +333,10 @@ export type UsageEventScalarWhereWithAggregatesInput = {
   tenantId?: Prisma.StringWithAggregatesFilter<"UsageEvent"> | string
   type?: Prisma.EnumUsageTypeWithAggregatesFilter<"UsageEvent"> | $Enums.UsageType
   quantity?: Prisma.IntWithAggregatesFilter<"UsageEvent"> | number
+  inputTokens?: Prisma.IntNullableWithAggregatesFilter<"UsageEvent"> | number | null
+  cachedInputTokens?: Prisma.IntNullableWithAggregatesFilter<"UsageEvent"> | number | null
+  outputTokens?: Prisma.IntNullableWithAggregatesFilter<"UsageEvent"> | number | null
+  reasoningTokens?: Prisma.IntNullableWithAggregatesFilter<"UsageEvent"> | number | null
   idempotencyKey?: Prisma.StringWithAggregatesFilter<"UsageEvent"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UsageEvent"> | Date | string
 }
@@ -281,6 +345,10 @@ export type UsageEventCreateInput = {
   id?: string
   type: $Enums.UsageType
   quantity: number
+  inputTokens?: number | null
+  cachedInputTokens?: number | null
+  outputTokens?: number | null
+  reasoningTokens?: number | null
   idempotencyKey: string
   createdAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutUsageEventsInput
@@ -291,6 +359,10 @@ export type UsageEventUncheckedCreateInput = {
   tenantId: string
   type: $Enums.UsageType
   quantity: number
+  inputTokens?: number | null
+  cachedInputTokens?: number | null
+  outputTokens?: number | null
+  reasoningTokens?: number | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -299,6 +371,10 @@ export type UsageEventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cachedInputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reasoningTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutUsageEventsNestedInput
@@ -309,6 +385,10 @@ export type UsageEventUncheckedUpdateInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cachedInputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reasoningTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -318,6 +398,10 @@ export type UsageEventCreateManyInput = {
   tenantId: string
   type: $Enums.UsageType
   quantity: number
+  inputTokens?: number | null
+  cachedInputTokens?: number | null
+  outputTokens?: number | null
+  reasoningTokens?: number | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -326,6 +410,10 @@ export type UsageEventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cachedInputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reasoningTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -335,6 +423,10 @@ export type UsageEventUncheckedUpdateManyInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cachedInputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reasoningTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -359,12 +451,20 @@ export type UsageEventCountOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  inputTokens?: Prisma.SortOrder
+  cachedInputTokens?: Prisma.SortOrder
+  outputTokens?: Prisma.SortOrder
+  reasoningTokens?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type UsageEventAvgOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
+  inputTokens?: Prisma.SortOrder
+  cachedInputTokens?: Prisma.SortOrder
+  outputTokens?: Prisma.SortOrder
+  reasoningTokens?: Prisma.SortOrder
 }
 
 export type UsageEventMaxOrderByAggregateInput = {
@@ -372,6 +472,10 @@ export type UsageEventMaxOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  inputTokens?: Prisma.SortOrder
+  cachedInputTokens?: Prisma.SortOrder
+  outputTokens?: Prisma.SortOrder
+  reasoningTokens?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -381,12 +485,20 @@ export type UsageEventMinOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  inputTokens?: Prisma.SortOrder
+  cachedInputTokens?: Prisma.SortOrder
+  outputTokens?: Prisma.SortOrder
+  reasoningTokens?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type UsageEventSumOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
+  inputTokens?: Prisma.SortOrder
+  cachedInputTokens?: Prisma.SortOrder
+  outputTokens?: Prisma.SortOrder
+  reasoningTokens?: Prisma.SortOrder
 }
 
 export type UsageEventCreateNestedManyWithoutTenantInput = {
@@ -443,10 +555,22 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type UsageEventCreateWithoutTenantInput = {
   id?: string
   type: $Enums.UsageType
   quantity: number
+  inputTokens?: number | null
+  cachedInputTokens?: number | null
+  outputTokens?: number | null
+  reasoningTokens?: number | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -455,6 +579,10 @@ export type UsageEventUncheckedCreateWithoutTenantInput = {
   id?: string
   type: $Enums.UsageType
   quantity: number
+  inputTokens?: number | null
+  cachedInputTokens?: number | null
+  outputTokens?: number | null
+  reasoningTokens?: number | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -493,6 +621,10 @@ export type UsageEventScalarWhereInput = {
   tenantId?: Prisma.StringFilter<"UsageEvent"> | string
   type?: Prisma.EnumUsageTypeFilter<"UsageEvent"> | $Enums.UsageType
   quantity?: Prisma.IntFilter<"UsageEvent"> | number
+  inputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  cachedInputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  outputTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
+  reasoningTokens?: Prisma.IntNullableFilter<"UsageEvent"> | number | null
   idempotencyKey?: Prisma.StringFilter<"UsageEvent"> | string
   createdAt?: Prisma.DateTimeFilter<"UsageEvent"> | Date | string
 }
@@ -501,6 +633,10 @@ export type UsageEventCreateManyTenantInput = {
   id?: string
   type: $Enums.UsageType
   quantity: number
+  inputTokens?: number | null
+  cachedInputTokens?: number | null
+  outputTokens?: number | null
+  reasoningTokens?: number | null
   idempotencyKey: string
   createdAt?: Date | string
 }
@@ -509,6 +645,10 @@ export type UsageEventUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cachedInputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reasoningTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -517,6 +657,10 @@ export type UsageEventUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cachedInputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reasoningTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -525,6 +669,10 @@ export type UsageEventUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  inputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cachedInputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outputTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reasoningTokens?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -536,6 +684,10 @@ export type UsageEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   tenantId?: boolean
   type?: boolean
   quantity?: boolean
+  inputTokens?: boolean
+  cachedInputTokens?: boolean
+  outputTokens?: boolean
+  reasoningTokens?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -546,6 +698,10 @@ export type UsageEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   tenantId?: boolean
   type?: boolean
   quantity?: boolean
+  inputTokens?: boolean
+  cachedInputTokens?: boolean
+  outputTokens?: boolean
+  reasoningTokens?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -556,6 +712,10 @@ export type UsageEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   tenantId?: boolean
   type?: boolean
   quantity?: boolean
+  inputTokens?: boolean
+  cachedInputTokens?: boolean
+  outputTokens?: boolean
+  reasoningTokens?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -566,11 +726,15 @@ export type UsageEventSelectScalar = {
   tenantId?: boolean
   type?: boolean
   quantity?: boolean
+  inputTokens?: boolean
+  cachedInputTokens?: boolean
+  outputTokens?: boolean
+  reasoningTokens?: boolean
   idempotencyKey?: boolean
   createdAt?: boolean
 }
 
-export type UsageEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "type" | "quantity" | "idempotencyKey" | "createdAt", ExtArgs["result"]["usageEvent"]>
+export type UsageEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "type" | "quantity" | "inputTokens" | "cachedInputTokens" | "outputTokens" | "reasoningTokens" | "idempotencyKey" | "createdAt", ExtArgs["result"]["usageEvent"]>
 export type UsageEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }
@@ -591,6 +755,10 @@ export type $UsageEventPayload<ExtArgs extends runtime.Types.Extensions.Internal
     tenantId: string
     type: $Enums.UsageType
     quantity: number
+    inputTokens: number | null
+    cachedInputTokens: number | null
+    outputTokens: number | null
+    reasoningTokens: number | null
     idempotencyKey: string
     createdAt: Date
   }, ExtArgs["result"]["usageEvent"]>
@@ -1021,6 +1189,10 @@ export interface UsageEventFieldRefs {
   readonly tenantId: Prisma.FieldRef<"UsageEvent", 'String'>
   readonly type: Prisma.FieldRef<"UsageEvent", 'UsageType'>
   readonly quantity: Prisma.FieldRef<"UsageEvent", 'Int'>
+  readonly inputTokens: Prisma.FieldRef<"UsageEvent", 'Int'>
+  readonly cachedInputTokens: Prisma.FieldRef<"UsageEvent", 'Int'>
+  readonly outputTokens: Prisma.FieldRef<"UsageEvent", 'Int'>
+  readonly reasoningTokens: Prisma.FieldRef<"UsageEvent", 'Int'>
   readonly idempotencyKey: Prisma.FieldRef<"UsageEvent", 'String'>
   readonly createdAt: Prisma.FieldRef<"UsageEvent", 'DateTime'>
 }

@@ -624,6 +624,10 @@ export const UsageEventScalarFieldEnum = {
   tenantId: 'tenantId',
   type: 'type',
   quantity: 'quantity',
+  inputTokens: 'inputTokens',
+  cachedInputTokens: 'cachedInputTokens',
+  outputTokens: 'outputTokens',
+  reasoningTokens: 'reasoningTokens',
   idempotencyKey: 'idempotencyKey',
   createdAt: 'createdAt'
 } as const
