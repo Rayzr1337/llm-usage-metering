@@ -25,12 +25,16 @@ interface ProcessUsageEventResult {
 
 interface UsageSummary {
   period: { start: Date };
+  plan: Tenant["plan"];
+  subscriptionStatus: Tenant["subscriptionStatus"];
   usage: {
     apiCalls: { used: number; limit: number };
     aiTokens: { used: number; limit: number };
   };
   costCents: number;
 }
+
+const ACTIVE_STATUSES = ["active", "trialing"];
 
 export class MeteringService {
   async processUsageEvent(input: ProcessUsageEventInput): Promise<ProcessUsageEventResult> {
@@ -47,6 +51,11 @@ export class MeteringService {
       const existingInLock = await usageEventRepository.findByIdempotencyKey(tenant.id, idempotencyKey, tx);
       if (existingInLock) {
         return { event: existingInLock, wasNew: false };
+      }
+
+      if (tenant.plan === "PRO" && !ACTIVE_STATUSES.includes(tenant.subscriptionStatus ?? "")) {
+          throw new AppError(402, "subscription_inactive", 
+            "Your Pro subscription is not active. Please update your payment method or resubscribe.");
       }
 
       const quota = PLAN_QUOTAS[tenant.plan][type];
@@ -102,6 +111,8 @@ export class MeteringService {
 
     return {
       period: { start: startOfMonth },
+      plan: tenant.plan,
+      subscriptionStatus: tenant.subscriptionStatus,
       usage: {
         apiCalls: { used: apiCallsUsed, limit: quota.API_CALL },
         aiTokens: { used: aiTokensUsed, limit: quota.AI_TOKENS },
