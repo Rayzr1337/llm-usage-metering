@@ -4,7 +4,8 @@ A metering and billing service that tracks usage for LLM tokens and API calls, e
 
 ## Status
 
-In progress. Phase 2 (core billing logic) complete and manually verified. Starting Phase 3: Stripe integration.
+Core billing logic and Stripe integration are built and manually verified end to end. 
+Remaining: the 402 payment-required branch, a full eval pass, final documentation, test suite.
 
 ## Stack
 
@@ -16,7 +17,13 @@ In progress. Phase 2 (core billing logic) complete and manually verified. Starti
 
 ## Setup
 
-To be filled in once the app runs end to end.
+1. `npm install`
+2. Copy `.env.example` to `.env` and fill in `DATABASE_URL`, `APP_URL`, and your Stripe test keys (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRO_PRICE_ID`)
+3. `docker compose up -d`
+4. `npx prisma migrate dev && npx prisma generate`
+5. `npx prisma db seed` — creates two demo tenants, `demo_free_key` and `demo_pro_key`
+6. `npm run dev`
+7. In a separate terminal: `stripe listen --forward-to localhost:3000/billing/webhooks/stripe`, then copy the printed `whsec_...` into `.env` and restart the server
 
 ## Architecture
 
@@ -26,10 +33,30 @@ To be filled in during Phase 4, with a diagram and explanation of the metering, 
 
 | Method | Endpoint | Description | Auth required |
 | ------ | -------- | ------------ | -------------- |
-| POST | `/usage` | Record a billable usage event (API call or AI tokens), idempotent by key | Yes |
-| GET | `/usage` | Roll up the current billing period's usage, quota, and cost for the authenticated tenant | Yes |
+| POST | `/usage` | Record a billable usage event, idempotent by key | Yes |
+| GET | `/usage` | Roll up current-period usage, quota, and cost | Yes |
+| POST | `/billing/checkout` | Create a Stripe Checkout Session to upgrade to Pro | Yes |
+| POST | `/billing/webhooks/stripe` | Receive and process Stripe subscription events | No (signature verified instead) |
+| GET | `/health` | Health check | No |
 
 Routes marked **Yes** require an `X-API-Key` header identifying the tenant.
+
+Example:
+```bash
+curl -i -X POST http://localhost:3000/usage/generate \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: demo_free_key" \
+  -H "Idempotency-Key: <unique per request>" \
+  -d '{"type":"API_CALL","quantity":1}'
+```
+
+## Payments
+
+Test mode only, no real card or money ever involved. Test card `4242 4242 4242 4242`, any future expiry, any CVC.
+
+The tenant's plan is only ever updated by the Stripe webhook, not by the browser redirect after checkout, since the redirect can be reached without paying. Webhooks are signature-verified, and each event id is recorded once processed so a redelivered event isn't applied twice.
+
+Note: Stripe now uses per-sandbox test environments, each with its own keys and data. The Stripe CLI and the API key in `.env` must be pointed at the same sandbox, or webhook events will never arrive locally.
 
 ## Design decisions
 
