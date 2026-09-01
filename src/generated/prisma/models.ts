@@ -10,4 +10,5 @@
  */
 export type * from './models/Tenant'
 export type * from './models/UsageEvent'
+export type * from './models/WebhookEvent'
 export type * from './commonInputTypes'

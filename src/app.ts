@@ -2,19 +2,22 @@ import express, { type Application, type Request, type Response, type NextFuncti
 
 import { errorHandler } from "./middleware/error.middleware";
 import { billingRouter } from "./routes/billing.routes";
-import { tenantsRouter } from "./routes/tenants.routes";
 import { usageRouter } from "./routes/usage.routes";
 
 export function createApp(): Application {
   const app = express();
 
-  app.use(express.json({ limit: "1mb" }));
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.originalUrl === "/billing/webhooks/stripe") {
+      return next();
+    }
+    express.json({ limit: "1mb" })(req, res, next);
+  });
 
   app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ status: "ok" });
   });
-
-  app.use("/tenants", tenantsRouter);
+  
   app.use("/usage", usageRouter);
   app.use("/billing", billingRouter);
 

@@ -27,3 +27,8 @@ export type Tenant = Prisma.TenantModel
  * 
  */
 export type UsageEvent = Prisma.UsageEventModel
+/**
+ * Model WebhookEvent
+ * 
+ */
+export type WebhookEvent = Prisma.WebhookEventModel

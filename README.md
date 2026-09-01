@@ -26,7 +26,7 @@ To be filled in during Phase 4, with a diagram and explanation of the metering, 
 
 | Method | Endpoint | Description | Auth required |
 | ------ | -------- | ------------ | -------------- |
-| POST | `/usage/generate` | Record a billable usage event (API call or AI tokens), idempotent by key | Yes |
+| POST | `/usage` | Record a billable usage event (API call or AI tokens), idempotent by key | Yes |
 | GET | `/usage` | Roll up the current billing period's usage, quota, and cost for the authenticated tenant | Yes |
 
 Routes marked **Yes** require an `X-API-Key` header identifying the tenant.

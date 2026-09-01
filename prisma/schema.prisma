@@ -46,3 +46,10 @@ model UsageEvent {
   @@unique([tenantId, idempotencyKey])
   @@index([tenantId, createdAt])
 }
+
+model WebhookEvent {
+  id            String   @id @default(uuid())
+  stripeEventId String   @unique
+  type          String
+  processedAt   DateTime @default(now())
+}

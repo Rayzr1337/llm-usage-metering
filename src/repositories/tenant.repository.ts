@@ -1,23 +1,28 @@
-import { prisma } from "../lib/prisma";
 import type { Tenant, Prisma } from "../generated/prisma/client";
+import { prisma } from "../lib/prisma";
+
+type Client = typeof prisma | Prisma.TransactionClient;
 
 export class TenantRepository {
-    async createTenant(data: Prisma.TenantCreateInput): Promise<Tenant> {
-        return prisma.tenant.create({ data });
-    }
+  async findByApiKey(apiKey: string, client: Client = prisma): Promise<Tenant | null> {
+    return client.tenant.findUnique({ where: { apiKey } });
+  }
 
-    async findById(id: string): Promise<Tenant | null> {
-        return prisma.tenant.findUnique({ where: { id } });
-    }
+  async findById(id: string, client: Client = prisma): Promise<Tenant | null> {
+    return client.tenant.findUnique({ where: { id } });
+  }
 
-    async findByApiKey(key: string): Promise<Tenant | null> {
-        return prisma.tenant.findUnique({ where: { apiKey: key } });
-    }
+  async findByStripeCustomerId(stripeCustomerId: string, client: Client = prisma): Promise<Tenant | null> {
+    return client.tenant.findUnique({ where: { stripeCustomerId } });
+  }
 
-    async updateTenant(id: string, data: Prisma.TenantUpdateInput): Promise<Tenant> {
-        return prisma.tenant.update({ where: { id }, data });
-    }
+  async createTenant(data: Prisma.TenantCreateInput, client: Client = prisma): Promise<Tenant> {
+    return client.tenant.create({ data });
+  }
+
+  async updateTenant(id: string, data: Prisma.TenantUpdateInput, client: Client = prisma): Promise<Tenant> {
+    return client.tenant.update({ where: { id }, data });
+  }
 }
 
 export const tenantRepository = new TenantRepository();
-
