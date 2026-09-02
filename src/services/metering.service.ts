@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma";
+import { redisClient as redis } from "../lib/redis";
 import { usageEventRepository } from "../repositories/usageEvent.repository";
 import { AppError } from "../middleware/error.middleware";
 import { PLAN_QUOTAS } from "../config/plans";
@@ -34,18 +35,34 @@ interface UsageSummary {
   costCents: number;
 }
 
+interface CachedAggregate {
+  apiCallsUsed: number;
+  tokenBreakdown: {
+    inputTokens: number;
+    cachedInputTokens: number;
+    outputTokens: number;
+    reasoningTokens: number;
+  };
+}
+
 const ACTIVE_STATUSES = ["active", "trialing"];
+const DEFAULT_TTL_SECONDS = 60;
+
+function usageCacheKey(tenantId: string, periodStart: Date): string {
+  return `usage-agg:${tenantId}:${periodStart.toISOString()}`;
+}
 
 export class MeteringService {
   async processUsageEvent(input: ProcessUsageEventInput): Promise<ProcessUsageEventResult> {
     const { tenant, type, quantity, idempotencyKey, tokens } = input;
+    const startOfMonth = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1));
 
     const existing = await usageEventRepository.findByIdempotencyKey(tenant.id, idempotencyKey);
     if (existing) {
       return { event: existing, wasNew: false };
     }
 
-    return prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${tenant.id}))`;
 
       const existingInLock = await usageEventRepository.findByIdempotencyKey(tenant.id, idempotencyKey, tx);
@@ -59,8 +76,6 @@ export class MeteringService {
       }
 
       const quota = PLAN_QUOTAS[tenant.plan][type];
-      const now = new Date();
-      const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
 
       const currentUsage = await usageEventRepository.sumQuantitySince(tenant.id, type, startOfMonth, tx);
 
@@ -86,16 +101,28 @@ export class MeteringService {
 
       return { event, wasNew: true };
     });
+
+    if (result.wasNew) {
+      await this.invalidateUsageCache(tenant.id, startOfMonth);
+    }
+
+    return result;
   }
 
   async getUsageSummary(tenant: Tenant): Promise<UsageSummary> {
-    const now = new Date();
-    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+    const startOfMonth = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1));
+    const cached = await this.readUsageCache(tenant.id, startOfMonth);
 
-    const [apiCallsUsed, tokenBreakdown] = await Promise.all([
-      usageEventRepository.sumQuantitySince(tenant.id, "API_CALL", startOfMonth),
-      usageEventRepository.sumTokenBreakdownSince(tenant.id, startOfMonth),
-    ]);
+    const { apiCallsUsed, tokenBreakdown } = 
+    cached ??  (await (async () => {
+      const [apiCallsUsed, tokenBreakdown] = await Promise.all([
+        usageEventRepository.sumQuantitySince(tenant.id, "API_CALL", startOfMonth),
+        usageEventRepository.sumTokenBreakdownSince(tenant.id, startOfMonth),
+      ]);
+
+      await this.writeUsageCache(tenant.id, startOfMonth, { apiCallsUsed, tokenBreakdown });
+      return { apiCallsUsed, tokenBreakdown };
+    })());
 
     const aiTokensUsed =
       tokenBreakdown.inputTokens +
@@ -119,6 +146,40 @@ export class MeteringService {
       },
       costCents,
     };
+  }
+
+  private async readUsageCache(tenantId: string, periodStart: Date): Promise<CachedAggregate | null> {
+    if (!redis.isOpen) return null;
+
+    try {
+      const raw = await redis.get(usageCacheKey(tenantId, periodStart));
+      return raw ? (JSON.parse(raw) as CachedAggregate) : null;
+    } catch (err) {
+      console.warn("Redis read failed, falling back to database:", err);
+      return null;
+    }
+  }
+
+  private async writeUsageCache(tenantId: string, periodStart: Date, value: CachedAggregate): Promise<void> {
+    if (!redis.isOpen) return;
+
+    try {
+      await redis.set(usageCacheKey(tenantId, periodStart), JSON.stringify(value), {
+        EX: DEFAULT_TTL_SECONDS,
+      });
+    } catch (err) {
+      console.warn("Redis write failed, continuing without cache:", err);
+    }
+  }
+
+  private async invalidateUsageCache(tenantId: string, periodStart: Date): Promise<void> {
+    if (!redis.isOpen) return;
+
+    try {
+      await redis.del(usageCacheKey(tenantId, periodStart));
+    } catch (err) {
+      console.warn("Redis invalidation failed:", err);
+    }
   }
 }
 
