@@ -9,8 +9,8 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "tsx src/server.ts",
+    "build": "tsdown",
+    "start": "node dist/server.js",
     "test": "jest",
     "postinstall": "prisma skills sync || exit 0"
   },
@@ -34,6 +34,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "pg": "^8.23.0",
+    "prisma": "^7.10.0",
     "redis": "^6.2.1",
     "stripe": "^22.6.0",
     "zod": "^4.5.2"
@@ -44,8 +45,8 @@
     "@types/node": "^26.4.0",
     "@types/supertest": "^7.2.1",
     "jest": "^30.5.0",
-    "prisma": "^7.10.0",
     "supertest": "^7.2.2",
+    "tsdown": "^0.22.14",
     "tsx": "^4.23.13",
     "typescript": "^5.9.3"
   }

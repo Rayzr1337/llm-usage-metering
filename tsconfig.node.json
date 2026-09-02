@@ -8,5 +8,5 @@
     "outDir": "dist-node",
     "types": ["node"]
   },
-  "include": ["prisma.config.ts", "prisma/**/*.ts", "src/**/*.ts"],
+  "include": ["prisma.config.ts", "prisma/**/*.ts"],
 }

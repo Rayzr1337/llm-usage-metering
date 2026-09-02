@@ -1,4 +1,22 @@
 services:
+    api:
+      container_name: llm-usage
+      build: 
+        context: .
+        dockerfile: dockerfile
+      restart: unless-stopped
+      env_file:
+        - .env
+      environment:
+        DATABASE_URL: postgres://postgres:dev@db:5432/llm_usage
+        REDIS_URL: redis://redis:6379
+      ports:
+        - "${PORT}:${PORT}"
+      depends_on:
+        db:
+          condition: service_healthy
+        redis:
+          condition: service_healthy
     db:
       image: postgres:17-alpine
       restart: unless-stopped
@@ -20,8 +38,6 @@ services:
     redis:
       image: redis:8-alpine
       restart: unless-stopped
-      ports:
-        - "6379:6379"
 
       healthcheck:
         test: ["CMD", "redis-cli", "ping"]
