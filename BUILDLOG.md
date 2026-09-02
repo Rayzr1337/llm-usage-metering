@@ -1,0 +1,23 @@
+# Build log
+
+AI tools used throughout: Claude (design discussion, code review, debugging) and opencode with MiniMax M3 (scaffolding and the test suite generation). Everything below was reviewed and understood before being kept, not accepted blind.
+
+## What AI helped with
+
+- **File structure and initial scaffolding.** Used opencode to generate the empty `src/` folder structure (routes, controllers, services, repositories, middleware, lib, config, types) before writing any application code, based on a layered architecture I specified.
+- **Documentation lookup and summarization.** Prisma 7's breaking changes (driver adapters, config file restructuring), Stripe's Checkout/webhook flow, and Stripe's sandbox model were all things I hadn't worked with before. Used Claude to pull current documentation and explain concepts (idempotency keys, webhook signature verification, ambient TypeScript types) rather than working from possibly-outdated training knowledge, since this stack has been changing fast.
+- **Boilerplate generation.** Repository classes, error middleware, Zod schemas, and the Stripe service methods were drafted with Claude and then reviewed line by line, with explanations required for anything I didn't already understand before accepting it.
+- **Test suite generation.** Used opencode with MiniMax M3 to write the full Jest/Supertest suite against a detailed spec I wrote listing the exact priority test cases (idempotency, quota boundaries, 402/409 gating, webhook verification/dedup, pricing math) and explicitly banning several kinds of low-value tests. Reviewed the resulting judgment calls (ESM test config, per-test database truncation strategy) before accepting them.
+
+## Where AI was wrong or incomplete, and what I caught or changed
+
+- **A real idempotency-vs-quota bug.** My original design checked quota before checking for a duplicate idempotency key. Claude initially proposed accepting this as a documented limitation rather than fixing it. I pushed back and asked for it actually fixed, which led to the per-tenant Postgres advisory lock design that closes the race properly instead of just noting it.
+- **A cache-invalidation date bug.** In an early version of the Redis cache-aside logic, the write path computed the billing-period boundary once inside a transaction, but the cache-invalidation call afterward recomputed it independently. I caught that these could diverge across a month boundary and asked for the value to be computed once and threaded through both, rather than recalculated.
+- **Landed on a release-candidate dependency by accident.** `npm install prisma` resolved to Prisma 8.0.0-rc.12, an unstable release with a restructured CLI, without me realizing it. Diagnosed this myself by comparing the CLI's actual command tree against what documentation described, then pinned to stable 7.x.
+- **A Stripe environment mismatch that took real debugging, not a code bug.** After building the checkout and webhook flow, `stripe listen` showed nothing even though a real payment succeeded. Traced this to the Stripe CLI being authenticated to a different sandbox than the one my API's key belonged to, a newer Stripe feature that isolates test data per sandbox even under the same account. Fixed by re-authenticating the CLI to the correct sandbox.
+- **A deprecated method suggested in passing.** An early draft of the Redis shutdown logic used `.disconnect()`. I noticed it rendering as struck-through in my editor and asked why; it's deprecated in node-redis v5+ in favor of `.close()` (graceful) or `.destroy()` (forceful). Fixed to use `.close()`.
+- **A shutdown-sequencing bug from early in the project, unrelated to AI use directly but caught during a later review pass.** `server.close()`'s callback wasn't actually being awaited before the database disconnected, meaning in-flight requests could lose their database connection mid-request during shutdown. Fixed by wrapping it in a Promise.
+
+## What I did not accept without understanding
+
+Every piece of generated code that touches money (pricing calculations, rounding) or correctness under concurrency (idempotency, the advisory lock, webhook dedup) was walked through line by line before being kept, including asking for the reasoning behind specific choices like why rounding is deferred to a single point, why the idempotency check runs before the quota check, and why the lock is scoped per-tenant rather than globally.

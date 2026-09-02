@@ -1,0 +1,59 @@
+# Capstone submission manifest — read by the evaluator to bring the system
+# up and know what to check. All commands assume the repo root as the
+# working directory and a .env populated per README.md's Setup section.
+
+run: docker compose up -d --build
+
+seed: npx prisma db seed
+
+test: npm test
+
+base_url: http://localhost:4750
+
+# Update base_url above to match whatever PORT is set in your .env —
+# 4750 matches .env.example; the code falls back to 3000 only if PORT
+# is unset (see src/server.ts).
+
+endpoints:
+  - method: POST
+    path: /usage
+    description: >
+      Record a billable usage event. Idempotent by the Idempotency-Key
+      header. Requires X-API-Key. Body: { "type": "API_CALL", "quantity": 1 }
+      or { "type": "AI_TOKENS", "tokens": { "inputTokens": ..., "cachedInputTokens": ...,
+      "outputTokens": ..., "reasoningTokens": ... } }
+    probes:
+      - "Same request sent twice with the same Idempotency-Key returns the same id, second response has replayed: true"
+      - "Driving a tenant to its plan quota: the boundary request succeeds, the next returns 429 quota_exceeded"
+      - "A Pro tenant with an inactive subscription returns 402 subscription_inactive"
+
+  - method: GET
+    path: /usage
+    description: >
+      Roll up the current billing period's usage, quota, and cost for the
+      authenticated tenant. Requires X-API-Key.
+    probes:
+      - "Cost figure matches pinned pricing constants for a known set of recorded token usage"
+      - "limit values reflect the tenant's current plan, matching what POST /usage enforces"
+
+  - method: POST
+    path: /billing/checkout
+    description: >
+      Create a Stripe Checkout Session to upgrade the authenticated tenant
+      to Pro. Requires X-API-Key and Idempotency-Key. Returns a Stripe-hosted
+      checkout URL; complete payment with test card 4242 4242 4242 4242.
+    probes:
+      - "Completing checkout with the test card and confirming the following webhook flips the tenant's plan from FREE to PRO"
+
+  - method: POST
+    path: /billing/webhooks/stripe
+    description: >
+      Receives and processes Stripe events. Not called by API clients
+      directly. Requires a valid stripe-signature header.
+    probes:
+      - "A request with a missing or invalid stripe-signature header returns 400 and no database change occurs"
+      - "The same event id delivered twice results in exactly one processed update, not two"
+
+  - method: GET
+    path: /health
+    description: Health check, no auth required.
