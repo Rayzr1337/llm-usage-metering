@@ -2,11 +2,6 @@
 
 A metering and billing service that tracks usage for LLM tokens and API calls, enforces plan quotas, calculates cost, and syncs subscription state through Stripe in test mode.
 
-This project was developed as a capstone project for the FlyRank AI Backend AI Engineering Internship track.
-
-## Status
-
-Feature complete and manually verified end to end, including a Jest and Supertest test suite. Remaining: final evidence documentation and one last pass through the full acceptance-probe list.
 
 ## Stack
 
@@ -36,7 +31,7 @@ Requires a real Postgres test database, separate from the dev database. See `tes
 ## Architecture
 
 ```
-Client -> POST /usage/generate
+Client -> POST /usage
   -> resolve tenant from X-API-Key
   -> check for an existing idempotency key
      | found  -> return the original result
@@ -62,7 +57,7 @@ Stripe -> POST /billing/webhooks/stripe
 
 All auth-required routes need an `X-API-Key` header. `POST /usage/generate` and `POST /billing/checkout` also need a caller-generated `Idempotency-Key` header.
 
-### `POST /usage/generate`
+### `POST /usage`
 
 Records a billable usage event. Idempotent by key: replaying the same request with the same `Idempotency-Key` returns the original result instead of creating a second event.
 
@@ -221,3 +216,5 @@ Pricing constants (per-call and per-token-category, in micro-cents) are pinned i
 ## Evidence and build log
 
 See `EVIDENCE.md` for proof of each requirement and `BUILDLOG.md` for a record of where AI tools were used during development.
+
+This project was developed as a capstone project for the FlyRank AI Backend AI Engineering Internship track.
